@@ -1,0 +1,173 @@
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px 30px;
+  background-color: #ffffff;
+  color: white;
+}
+
+.logo {
+  height: 100px;
+  justify-content: center;
+}
+
+.headerTitle {
+  font-size: 24px;
+}
+
+.content {
+  display: flex;
+  height: calc(100vh - 80px); 
+}
+
+
+.left, .right {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 20px;
+  text-align: center;
+}
+
+.left {
+  background-color: #f72585;
+}
+
+.right {
+  background-color: #000000;
+  flex-direction: column;
+}
+
+.loginBtn {
+  display: inline-block;
+  margin-top: 15px;
+  padding: 10px 20px;
+  font-size: 18px;
+  color: #4f120b;
+  background-color: white;
+  border: none;
+  border-radius: 5px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.loginBtn:hover {
+  background-color: #f72585;
+  color: #2c3e50;
+}
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: #f5f0f3;
+}
+
+.link {
+  text-decoration: none;
+  color: #f72585;
+  font-size: 20px;
+  font-weight: bold;
+  margin: 10px 0;
+  padding: 10px 20px;
+  border-radius: 5px;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.link:hover {
+  background-color: #f5a5ca;
+  color: #ffffff;
+}
+
+.titulo{
+  color: #e12f7f;
+  font-size: 40px;
+  font-weight: bold;
+  margin: 20px 0;
+  background-color: #ffdaeb;
+  padding: 20px 40px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  background-color: #fff;
+  border-radius: 7px;
+  padding: 40px;
+  box-shadow: 10px 10px 40px rgba(0, 0, 0, 0.4);
+  gap: 20px; 
+}
+
+.page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
+  width: 100%;
+  height: 100vh;
+  background-color: #ffffff;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  background-color: #fff;
+  border-radius: 7px;
+  padding: 40px;
+  box-shadow: 10px 10px 40px rgba(0, 0, 0, 0.4);
+  gap: 5px
+}
+
+.areaLogin img {
+  width: 420px;
+}
+
+.form h1 {
+  padding: 0;
+  margin: 0;
+  font-weight: 500;
+  font-size: 2.3em;
+}
+
+.form p {
+  display: inline-block;
+  font-size: 20px;
+  color: #000000;
+  margin-bottom: 25px;
+}
+
+.form input {
+  padding: 15px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  margin-bottom: 20px;
+  margin-top: 5px;
+  border-radius: 4px;
+  transition: all linear 160ms;
+  outline: none;
+}
+
+
+.form input:focus {
+  border: 1px solid #f72585;
+}
+
+.form label {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.form a {
+  display: inline-block;
+  margin-bottom: 20px;
+  font-size: 20px;
+  color: #000000;
+  transition: all linear 160ms;
+}

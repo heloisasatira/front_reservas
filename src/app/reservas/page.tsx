@@ -3,15 +3,13 @@ import Image from "next/image";
 import { stringify } from "querystring";
 import { ChangeEvent, useState } from "react";
 
-
-
 export default function Home() {
   function getDateNow (){
     const today = new Date()
     return today.toISOString().split("T")[0]
   }
 
-  const [selectedTable, setSelectedTable] = useState(null);
+  const [selectedTable, setSelectedTable] = useState('');
   const [dateTables, setDateTables] = useState(getDateNow)
   const tables = [{id: 1, nome: "Mesa 1"}, {id: 2, nome: "Mesa 2"}, {id: 3, nome: "Mesa 3"}]
   const reservas = [{
@@ -50,7 +48,6 @@ export default function Home() {
         </div>
       </div>
 
-
       <div className="w-full lg:w-1/2 bg-white p-6">
         <div>
           <h2 className="text-xl font-bold mb-4">Mesas Disponíveis</h2>
@@ -83,14 +80,13 @@ export default function Home() {
             <button
               key={table.id}
               className="p-4 text-white bg-indigo-500 rounded-lg hover:bg-indigo-600 focus:outline-none focus:bg-indigo-700"
-              onClick={() => setSelectedTable(table.nome)}
+              onClick={() => setSelectedTable(table.nome)} 
             >
               {table.nome}
             </button>
           )}})}
         </div>
       </div>
-
 
       <div className="w-full lg:w-1/4 bg-gray-100 p-4 border-t lg:border-t-0 lg:border-l">
         {selectedTable ? (
@@ -118,7 +114,6 @@ export default function Home() {
                   type="number"
                   max={4}
                   min={1}
-                
                   className="p-2 border rounded"
                 />
               </label>
