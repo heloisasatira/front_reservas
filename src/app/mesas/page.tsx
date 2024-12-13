@@ -1,150 +1,164 @@
 'use client';
 import styles from "./page.module.css";
-import { FormEvent, useState, useEffect } from "react"; import { useRouter } from "next/navigation";
-import Usuario from "../interfaces/usuario";
-import Titulo from "../components/titulo";
+import { FormEvent, useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { setCookie, parseCookies } from 'nookies';
 import { ApiURL } from "../Config";
+import Titulo from "../components/titulo";
 
 const CadastrarMesa = () => {
-  const [usuario, setUsuario] = useState<Usuario>({
+  const [mesa, setMesa] = useState({
     nome: '',
-    email: '',
-    password: '',
-    tipo: 'Adm'
+    numero: ''
   });
-  //este usuario precisa ter as caracteristicas de Usuario
-  
+
   const [msgError, setMsgError] = useState('');
   const router = useRouter();
-  
-  useEffect(()=>{
-    console.log(msgError)
-  },[msgError])
+
+  useEffect(() => {
+    const { 'restaurant-token': token } = parseCookies();
+
+    // Verificar se o token está presente e é de um administrador
+    if (!token) {
+      router.push('/Login');
+    } else {
+      (async () => {
+        try {
+          const response = await fetch(`${ApiURL}/auth/verify-token`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            }
+          });
+
+          const data = await response.json();
+
+          if (!data || data.tipo !== 'Adm') {
+            setMsgError('Acesso negado. Somente administradores podem cadastrar mesas.');
+            router.push('/');
+          }
+        } catch (error) {
+          console.error('Erro ao verificar token:', error);
+          setMsgError('Erro ao verificar permissão. Faça login novamente.');
+          router.push('/Login');
+        }
+      })();
+    }
+  }, [router]);
 
   const handleSubmit = async (e: FormEvent) => {
-    console.log('teste')
     e.preventDefault();
 
     try {
-      const response = await fetch(`${ApiURL}/auth/mesa`, {
+      const { 'restaurant-token': token } = parseCookies();
+      const response = await fetch(`${ApiURL}/mesas`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify(usuario)
+        body: JSON.stringify(mesa)
       });
-      console.log(response)
 
-      if (response) {
+      if (response.ok) {
         const data = await response.json();
-        const { erro, mensagem, token } = data;
-
-        if (erro) {
-          setMsgError(mensagem);
-        } else {
-          setCookie(undefined, 'restaurant-token', token, {
-            maxAge: 60 * 60 * 1 // 1 hora
-          });
-          router.push('/');
-        }
+        alert('Mesa cadastrada com sucesso!');
+        router.push('/');
       } else {
-        
+        const errorData = await response.json();
+        setMsgError(errorData.mensagem || 'Erro ao cadastrar a mesa.');
       }
     } catch (error) {
-      console.error('Erro na requisição:', error);
+      console.error('Erro ao cadastrar mesa:', error);
       setMsgError('Erro no servidor. Por favor, tente novamente mais tarde.');
     }
   };
 
-  useEffect(() => {
-    const { 'restaurant-token': token } = parseCookies();
-    if (token) {
-      router.push('/');
-    }
-  }, [router]);
-
   const alterarNome = (novoNome: string) => {
-    setUsuario((valoresAnteriores) => ({
+    setMesa((valoresAnteriores) => ({
       ...valoresAnteriores,
       nome: novoNome
-    }))
-  }
+    }));
+  };
 
-  const alterarEmail = (novoEmail: string) => {
-    setUsuario((valoresAnteriores) => ({
+  const alterarNumero = (novoNumero: string) => {
+    setMesa((valoresAnteriores) => ({
       ...valoresAnteriores,
-      email: novoEmail
-    }))
-  }
-
-  const alterarSenha = (novaSenha: string) => {
-    setUsuario((valoresAnteriores) => ({
-      ...valoresAnteriores,
-      password: novaSenha
-    }))
-  }
-  const [error, setError] = useState('');
-  const route = useRouter();
+      numero: novoNumero
+    }));
+  };
 
   return (
     <div className={styles.page}>
+      <form className={styles.form} onSubmit={handleSubmit}>
+        <Titulo titulo="Cadastrar Mesa" />
+        {msgError && <p className={styles.error}>{msgError}</p>}
 
-      <form className={styles.form} onSubmit={handleSubmit} >
-        <Titulo titulo="Mesa" />
         <div className={styles.inputGroup}>
           <input
-            type="nome"
-            placeholder="Nome"
-            value={usuario?.nome}
+            type="text"
+            placeholder="Nome da Mesa"
+            value={mesa.nome}
             onChange={(e) => alterarNome(e.target.value)}
             required
           />
         </div>
+
         <div className={styles.inputGroup}>
           <input
-            type="numero"
-            placeholder="Número"
-            value={usuario?.email}
-            onChange={(e) => alterarEmail(e.target.value)}
+            type="text"
+            placeholder="Número da Mesa"
+            value={mesa.numero}
+            onChange={(e) => alterarNumero(e.target.value)}
             required
           />
         </div>
 
         <div className={styles.buttonGroup}>
-          <button type="submit" style ={{
-        width: '204px',
-        height: '50px', 
-        backgroundColor: '#ff0084',
-        borderRadius: '5px',
-        color: '#fff',
-        fontSize: '18px', 
-        fontWeight: '600',
-        border: 'none',
-        cursor: 'pointer',
-        transition: 'background-color 160ms linear, transform 160ms ease',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}>Cadastrar mesa</button>
+          <button
+            type="submit"
+            style={{
+              width: '204px',
+              height: '50px',
+              backgroundColor: '#ff0084',
+              borderRadius: '5px',
+              color: '#fff',
+              fontSize: '18px',
+              fontWeight: '600',
+              border: 'none',
+              cursor: 'pointer',
+              transition: 'background-color 160ms linear, transform 160ms ease',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
+          >
+            Cadastrar Mesa
+          </button>
         </div>
-        
+
         <div className="input-group">
-          <button style={{
-            width: '204px',
-            height: '50px',
-            backgroundColor: 'black',
-            borderRadius: '5px',
-            color: '#fff',
-            fontSize: '18px',
-            fontWeight: '600',
-            border: 'none',
-            cursor: 'pointer',
-            transition: 'background-color 160ms linear, transform 160ms ease',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }} onClick={() => { route.push('/Login') }}>Voltar</button>
+          <button
+            style={{
+              width: '204px',
+              height: '50px',
+              backgroundColor: 'black',
+              borderRadius: '5px',
+              color: '#fff',
+              fontSize: '18px',
+              fontWeight: '600',
+              border: 'none',
+              cursor: 'pointer',
+              transition: 'background-color 160ms linear, transform 160ms ease',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
+            onClick={() => { router.push('/'); }}
+          >
+            Voltar
+          </button>
         </div>
       </form>
     </div>
