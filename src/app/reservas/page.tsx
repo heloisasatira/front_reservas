@@ -1,9 +1,22 @@
 "use client"
 import Image from "next/image";
 import { stringify } from "querystring";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
+import { Mesa } from '../interfaces/mesa'
 
 export default function Home() {
+
+  const [mesas, setMesas] = useState<Mesa[]>([]);
+
+  useEffect(()=>{
+    async function fetchData(){
+      const response =  await fetch('http://localhost:3333/reservas');
+      const data = await response.json();
+      setMesas(data.mesas);
+    }
+    fetchData()
+  }, [])
+
   function getDateNow (){
     const today = new Date()
     return today.toISOString().split("T")[0]
@@ -11,7 +24,7 @@ export default function Home() {
 
   const [selectedTable, setSelectedTable] = useState('');
   const [dateTables, setDateTables] = useState(getDateNow)
-  const tables = [{id: 1, nome: "Mesa 1"}, {id: 2, nome: "Mesa 2"}, {id: 3, nome: "Mesa 3"}]
+  /* const tables = [{id: 1, nome: "Mesa 1"}, {id: 2, nome: "Mesa 2"}, {id: 3, nome: "Mesa 3"}] */
   const reservas = [{
     id : 1,
     mesa: 1,
@@ -32,18 +45,17 @@ export default function Home() {
     setDateTables(e.target.value)
   }
 
-
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col lg:flex-row">
       
       <div className="w-full lg:w-1/4 text-white p-4 flex items-center">
         <div className="bg-white text-gray-800 rounded-lg shadow-lg p-4 w-full max-w-sm">
           <img
-            src="https://github.com/MrMinerin.png"
+            src="https://atmosphere.ugr.es/sites/grupos/atmosphere/public/inline-images/fotoperfilanonimo_16.jpg"
             alt="Usuário"
             className="w-24 h-24 mx-auto rounded-full border-4 border-indigo-500"
           />
-          <h2 className="text-center text-lg font-bold mt-4">Jéferson Carlos de Souza</h2>
+          <h2 className="text-center text-lg font-bold mt-4">Heloisa Satira Rios dos Santos</h2>
           <p className="text-center text-gray-600">Cliente</p>
         </div>
       </div>
@@ -64,15 +76,15 @@ export default function Home() {
         </div>
         
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mt-2">
-          {tables.map((table) => {
+          {mesas.map((table) => {
           if (reservas.find(reserva => dateTables === reserva.data && reserva.mesa === table.id)){
             return (
               <button
                 key={table.id}
                 className="p-4 text-white bg-red-500 rounded-lg hover:bg-red-600 focus:outline-none focus:bg-red-700"
-                onClick={() => setSelectedTable(table.nome)}
+                onClick={() => setSelectedTable(table.codigo)}
               >
-                {table.nome}
+                {table.codigo}
               </button>
             )
           } else {
@@ -80,9 +92,9 @@ export default function Home() {
             <button
               key={table.id}
               className="p-4 text-white bg-indigo-500 rounded-lg hover:bg-indigo-600 focus:outline-none focus:bg-indigo-700"
-              onClick={() => setSelectedTable(table.nome)} 
+              onClick={() => setSelectedTable(table.codigo)} 
             >
-              {table.nome}
+              {table.codigo}
             </button>
           )}})}
         </div>
