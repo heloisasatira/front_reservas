@@ -1,91 +1,63 @@
 'use client';
 import styles from "./page.module.css";
-import { FormEvent, useState, useEffect } from "react";
+import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
-import { setCookie, parseCookies } from 'nookies';
+import { parseCookies } from 'nookies';
 import { ApiURL } from "../Config";
 import Titulo from "../components/titulo";
+import { Mesa } from "../interfaces/mesa";
 
 const CadastrarMesa = () => {
-  const [mesa, setMesa] = useState({
-    nome: '',
-    numero: ''
+  const [mesa, setMesa] = useState<Mesa>({
+    id: 0,
+    n_lugares: 0,
+    codigo: "",
   });
 
+  const [mesasCadastradas, setMesasCadastradas] = useState<Mesa[]>([]);
   const [msgError, setMsgError] = useState('');
+  const [msgSuccess, setMsgSuccess] = useState('');
   const router = useRouter();
-
-  useEffect(() => {
-    const { 'restaurant-token': token } = parseCookies();
-
-    // Verificar se o token está presente e é de um administrador
-    if (!token) {
-      router.push('/Login');
-    } else {
-      (async () => {
-        try {
-          const response = await fetch(`${ApiURL}/auth/verify-token`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`
-            }
-          });
-
-          const data = await response.json();
-
-          if (!data || data.tipo !== 'Adm') {
-            setMsgError('Acesso negado. Somente administradores podem cadastrar mesas.');
-            router.push('/');
-          }
-        } catch (error) {
-          console.error('Erro ao verificar token:', error);
-          setMsgError('Erro ao verificar permissão. Faça login novamente.');
-          router.push('/Login');
-        }
-      })();
-    }
-  }, [router]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-
+    setMsgError('');
+    setMsgSuccess('');
+  
     try {
       const { 'restaurant-token': token } = parseCookies();
-      const response = await fetch(`${ApiURL}/mesas`, {
+  
+      // Excluindo o campo `id` antes de enviar
+      const { id, ...mesaSemId } = mesa;
+  
+      const response = await fetch(`${ApiURL}/mesas/cadastro`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify(mesa)
+        body: JSON.stringify(mesaSemId), // Enviar sem o campo `id`
       });
-
-      if (response.ok) {
-        const data = await response.json();
-        alert('Mesa cadastrada com sucesso!');
-        router.push('/');
-      } else {
+  
+      if (!response.ok) {
         const errorData = await response.json();
-        setMsgError(errorData.mensagem || 'Erro ao cadastrar a mesa.');
+        throw new Error(errorData.message || 'Erro ao cadastrar a mesa.');
       }
-    } catch (error) {
+  
+      const novaMesa = await response.json();
+      setMesasCadastradas((prevMesas) => [...prevMesas, novaMesa]);
+      setMsgSuccess('Mesa cadastrada com sucesso!');
+      setMesa({ id: 0, n_lugares: 0, codigo: "" });
+    } catch (error: any) {
       console.error('Erro ao cadastrar mesa:', error);
-      setMsgError('Erro no servidor. Por favor, tente novamente mais tarde.');
+      setMsgError(error.message || 'Erro no servidor. Por favor, tente novamente mais tarde.');
     }
   };
-
-  const alterarNome = (novoNome: string) => {
-    setMesa((valoresAnteriores) => ({
-      ...valoresAnteriores,
-      nome: novoNome
-    }));
-  };
-
-  const alterarNumero = (novoNumero: string) => {
-    setMesa((valoresAnteriores) => ({
-      ...valoresAnteriores,
-      numero: novoNumero
+  
+  const alterarMesa = <K extends keyof Mesa>(key: K, value: Mesa[K]) => {
+    setMesa((prevMesa) => ({
+      ...prevMesa,
+      [key]: value,
     }));
   };
 
@@ -94,13 +66,14 @@ const CadastrarMesa = () => {
       <form className={styles.form} onSubmit={handleSubmit}>
         <Titulo titulo="Cadastrar Mesa" />
         {msgError && <p className={styles.error}>{msgError}</p>}
+        {msgSuccess && <p className={styles.success}>{msgSuccess}</p>}
 
         <div className={styles.inputGroup}>
           <input
-            type="text"
-            placeholder="Nome da Mesa"
-            value={mesa.nome}
-            onChange={(e) => alterarNome(e.target.value)}
+            type="number"
+            placeholder="Número de Lugares"
+            value={mesa.n_lugares}
+            onChange={(e) => alterarMesa("n_lugares", parseInt(e.target.value))}
             required
           />
         </div>
@@ -108,9 +81,9 @@ const CadastrarMesa = () => {
         <div className={styles.inputGroup}>
           <input
             type="text"
-            placeholder="Número da Mesa"
-            value={mesa.numero}
-            onChange={(e) => alterarNumero(e.target.value)}
+            placeholder="Código da Mesa"
+            value={mesa.codigo}
+            onChange={(e) => alterarMesa("codigo", e.target.value)}
             required
           />
         </div>
@@ -138,7 +111,7 @@ const CadastrarMesa = () => {
           </button>
         </div>
 
-        <div className="input-group">
+        <div className={styles.buttonGroup}>
           <button
             style={{
               width: '204px',
@@ -155,12 +128,36 @@ const CadastrarMesa = () => {
               alignItems: 'center',
               justifyContent: 'center'
             }}
-            onClick={() => { router.push('/'); }}
+            onClick={() => router.push('/')}
           >
             Voltar
           </button>
         </div>
       </form>
+
+      {mesasCadastradas.length > 0 && (
+        <div style={{ marginTop: "20px" }}>
+          <h2>Mesas Cadastradas</h2>
+          <table style={{ width: "100%", borderCollapse: "collapse" }}>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Código</th>
+                <th>Número de Lugares</th>
+              </tr>
+            </thead>
+            <tbody>
+              {mesasCadastradas.map((mesa) => (
+                <tr key={mesa.id}>
+                  <td>{mesa.id}</td>
+                  <td>{mesa.codigo}</td>
+                  <td>{mesa.n_lugares}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 };

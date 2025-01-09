@@ -25,8 +25,9 @@ const Login = () => {
         },
         body: JSON.stringify({ email, password })
       });
-      if (response.ok) {
+      if (response) {
         const data = await response.json();
+        console.log(data)
         const { erro, mensagem, token } = data;
         if (erro) {
           setMsgError(mensagem);

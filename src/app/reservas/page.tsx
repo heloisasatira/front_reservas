@@ -15,7 +15,7 @@ export default function Home() {
       setMesas(data.mesas);
     }
     fetchData()
-  }, [])
+  }, []);
 
   function getDateNow (){
     const today = new Date()
