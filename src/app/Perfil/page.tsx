@@ -1,4 +1,6 @@
+"use client"
 import React, { useEffect, useState } from "react";
+import { ApiURL } from "../Config";
 import { Perfil } from "../Types/perfil"; // Importa o tipo definido
 
 const PerfilUsuario: React.FC = () => {
@@ -7,25 +9,33 @@ const PerfilUsuario: React.FC = () => {
 
   useEffect(() => {
     const fetchPerfil = async () => {
+      const token = localStorage.getItem("token");
+  
+      if (!token) {
+        setErro("Token não encontrado. Por favor, faça login novamente.");
+        return;
+      }
+  
       try {
-        const response = await fetch("/api/perfil", {
+        const response = await fetch(`${ApiURL}/perfil`, {
           method: "GET",
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${token}`,
           },
         });
-
+  
         if (!response.ok) {
-          throw new Error("Erro ao carregar o perfil");
+          const errorMessage = await response.text();
+          throw new Error(`Erro ${response.status}: ${errorMessage}`);
         }
-
-        const data: Perfil = await response.json(); // Garante que a resposta siga o tipo Perfil
+  
+        const data: Perfil = await response.json();
         setPerfil(data);
       } catch (error: any) {
         setErro(error.message || "Erro desconhecido");
       }
     };
-
+  
     fetchPerfil();
   }, []);
 
@@ -37,6 +47,7 @@ const PerfilUsuario: React.FC = () => {
     return <p>Carregando...</p>;
   }
 
+  //retornando as informações do usuário
   return (
     <div>
       <h1>Perfil do Usuário</h1>
