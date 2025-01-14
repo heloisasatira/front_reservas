@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { ApiURL } from "../Config";
 import { Perfil } from "../Types/perfil"; // Importa o tipo definido
+import { setCookie, parseCookies } from "nookies";
 
 const PerfilUsuario: React.FC = () => {
   const [perfil, setPerfil] = useState<Perfil | null>(null); // Estado tipado
@@ -9,7 +10,7 @@ const PerfilUsuario: React.FC = () => {
 
   useEffect(() => {
     const fetchPerfil = async () => {
-      const token = localStorage.getItem("token");
+      const { 'restaurant-token': token } = parseCookies();
   
       if (!token) {
         setErro("Token não encontrado. Por favor, faça login novamente.");
