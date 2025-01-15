@@ -1,0 +1,61 @@
+/* Estilização geral */
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background-color: #000; /* Fundo preto */
+    height: 100vh;
+    color: #fff; /* Texto branco */
+  }
+  
+  .title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #f72585; /* Rosa */
+    margin-bottom: 20px;
+  }
+  
+  /* Container para os cards */
+  .cardContainer {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  /* Estilização dos cards */
+  .card {
+    background-color: #1a1a1a;
+    color: #fff;
+    border: 2px solid #f72585; /* Borda rosa */
+    border-radius: 10px;
+    padding: 20px;
+    width: 300px;
+    height: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  }
+  
+  .card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5);
+  }
+  
+  .card h2 {
+    font-size: 1.5rem;
+    color: #f72585;
+  }
+  
+  .card p {
+    font-size: 1rem;
+    text-align: center;
+    color: #e0e0e0;
+  }
+  

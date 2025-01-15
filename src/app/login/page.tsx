@@ -1,13 +1,10 @@
-'use client'
-import Usuario from "../interfaces/usuario";
-import Reserva from "../interfaces/reserva";
+'use client';
 import { useState, FormEvent, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import Button from "../components/button";
-import { ApiURL } from "../Config";
 import { setCookie, parseCookies } from "nookies";
 import Titulo from "../components/titulo";
 import styles from "./login.module.css";
+import { ApiURL } from "../Config";
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -27,15 +24,17 @@ const Login = () => {
       });
       if (response) {
         const data = await response.json();
-        console.log(data)
+        console.log(data);
         const { erro, mensagem, token } = data;
         if (erro) {
           setMsgError(mensagem);
         } else {
+          // Armazena o token em um cookie
           setCookie(undefined, 'restaurant-token', token, {
             maxAge: 60 * 60 * 1 // 1 hora
           });
-          router.push('/');
+          // Redireciona para a página redirecionamento.tsx
+          router.push('/Inicio/redirecionamento');
         }
       } else {
         setMsgError('Login falhou. Verifique suas credenciais.');
@@ -49,7 +48,7 @@ const Login = () => {
   useEffect(() => {
     const { 'restaurant-token': token } = parseCookies();
     if (token) {
-      router.push('/');
+      router.push('/Inicio/redirecionamento');
     }
   }, [router]);
 
@@ -108,7 +107,7 @@ const Login = () => {
             </div>
             <div className="input-group">
               <button
-                type="button" // Define como "button" para não submeter o formulário
+                type="button"
                 style={{
                   width: '204px',
                   height: '50px',
@@ -135,6 +134,6 @@ const Login = () => {
       </div>
     </div>
   );
-}
+};
 
 export default Login;
