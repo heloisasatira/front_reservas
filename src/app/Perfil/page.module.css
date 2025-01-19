@@ -65,7 +65,8 @@
   }
   
   .button {
-    padding: 10px 20px;
+    margin-right: 10px; /* Adiciona espaço entre os botões */
+    padding: 10px 20px; /* Apenas para ajustar o tamanho */
     background-color: #ffc2de;
     color: #000;
     font-weight: bold;

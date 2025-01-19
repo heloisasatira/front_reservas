@@ -36,16 +36,16 @@ const CadastrarMesa = () => {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify(mesaSemId), // Enviar sem o campo `id`
+        body: JSON.stringify(mesaSemId),
       });
   
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || 'Erro ao cadastrar a mesa.');
+        throw new Error(errorData.mensagem || 'Erro ao cadastrar a mesa.');
       }
   
       const novaMesa = await response.json();
-      setMesasCadastradas((prevMesas) => [...prevMesas, novaMesa]);
+      setMesasCadastradas((prevMesas) => [...prevMesas, novaMesa]); // Atualizar estado apenas com dados válidos
       setMsgSuccess('Mesa cadastrada com sucesso!');
       setMesa({ id: 0, n_lugares: 0, codigo: "" });
     } catch (error: any) {
@@ -136,28 +136,29 @@ const CadastrarMesa = () => {
       </form>
 
       {mesasCadastradas.length > 0 && (
-        <div style={{ marginTop: "20px" }}>
-          <h2>Mesas Cadastradas</h2>
-          <table style={{ width: "100%", borderCollapse: "collapse" }}>
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Código</th>
-                <th>Número de Lugares</th>
-              </tr>
-            </thead>
-            <tbody>
-              {mesasCadastradas.map((mesa) => (
-                <tr key={mesa.id}>
-                  <td>{mesa.id}</td>
-                  <td>{mesa.codigo}</td>
-                  <td>{mesa.n_lugares}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+  <div className={styles.tableContainer}>
+    <h2 className={styles.tableTitle}>Mesas Cadastradas</h2>
+    <table className={styles.table}>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Código</th>
+          <th>Número de Lugares</th>
+        </tr>
+      </thead>
+      <tbody>
+        {mesasCadastradas.map((mesa) => (
+          <tr key={mesa.id}>
+            <td>{mesa.id}</td>
+            <td>{mesa.codigo}</td>
+            <td>{mesa.n_lugares}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+)}
+
     </div>
   );
 };
