@@ -1,146 +1,137 @@
-"use client"
-import Image from "next/image";
-import { stringify } from "querystring";
-import { ChangeEvent, useEffect, useState } from "react";
-import { Mesa } from '../interfaces/mesa'
+'use client';
+import React, { useState, useEffect } from 'react';
+import { ApiURL } from '../Config';
 
-export default function Home() {
+interface Reserva {
+  id: number;
+  mesaId: number;
+  data: string;
+  usuarioId: number;
+  n_pessoas: number;
+}
 
-  const [mesas, setMesas] = useState<Mesa[]>([]);
+const ReservaPage: React.FC = () => {
+  const [mesaId, setMesaId] = useState<number | ''>('');
+  const [nPessoas, setNPessoas] = useState<number | ''>('');
+  const [data, setData] = useState<string>('');
+  const [reservas, setReservas] = useState<Reserva[]>([]);
+  const [mensagem, setMensagem] = useState<string>('');
 
-  useEffect(()=>{
-    async function fetchData(){
-      const response =  await fetch('http://localhost:3333/reservas');
+  const fetchReservas = async () => {
+    try {
+      const response = await fetch(`${ApiURL}/reservas/minhas-reservas`);
       const data = await response.json();
-      setMesas(data.mesas);
+
+      if (response.ok) {
+        setReservas(data);
+      } else {
+        setMensagem(data.error || 'Erro ao buscar reservas.');
+      }
+    } catch (error) {
+      console.error('Erro ao buscar reservas:', error);
+      setMensagem('Erro ao buscar reservas.');
     }
-    fetchData()
+  };
+
+  useEffect(() => {
+    fetchReservas();
   }, []);
 
-  function getDateNow (){
-    const today = new Date()
-    return today.toISOString().split("T")[0]
-  }
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
 
-  const [selectedTable, setSelectedTable] = useState('');
-  const [dateTables, setDateTables] = useState(getDateNow)
-  /* const tables = [{id: 1, nome: "Mesa 1"}, {id: 2, nome: "Mesa 2"}, {id: 3, nome: "Mesa 3"}] */
-  const reservas = [{
-    id : 1,
-    mesa: 1,
-    data: '2024-11-29'
-  }, 
-  {
-    id : 1,
-    mesa: 2,
-    data: '2024-11-29'
-  },
-  {
-    id : 1,
-    mesa: 2,
-    data: '2024-11-28'
-  }]
+    try {
+      const response = await fetch(`${ApiURL}/reservas/criar`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ mesaId, n_pessoas: nPessoas, data }),
+      });
 
-  function handleChangeDate (e: ChangeEvent<HTMLInputElement>) {
-    setDateTables(e.target.value)
-  }
+      const responseData = await response.json();
+
+      if (response.ok) {
+        setMensagem(responseData.message);
+        fetchReservas();
+      } else {
+        setMensagem(responseData.error || 'Erro ao criar reserva.');
+      }
+    } catch (error) {
+      console.error('Erro ao tentar criar reserva:', error);
+      setMensagem('Erro ao tentar criar reserva.');
+    }
+  };
+
+  const cancelarReserva = async (id: number) => {
+    try {
+      const response = await fetch(`${ApiURL}/reservas/cancelar`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ reservaId: id }),
+      });
+
+      if (response.ok) {
+        setReservas((prevReservas) => prevReservas.filter((r) => r.id !== id));
+        setMensagem('Reserva cancelada com sucesso.');
+      } else {
+        const errorData = await response.json();
+        setMensagem(errorData.error || 'Erro ao cancelar reserva.');
+      }
+    } catch (error) {
+      console.error('Erro ao cancelar reserva:', error);
+      setMensagem('Erro ao cancelar reserva.');
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col lg:flex-row">
-      
-      <div className="w-full lg:w-1/4 text-white p-4 flex items-center">
-        <div className="bg-white text-gray-800 rounded-lg shadow-lg p-4 w-full max-w-sm">
-          <img
-            src="https://atmosphere.ugr.es/sites/grupos/atmosphere/public/inline-images/fotoperfilanonimo_16.jpg"
-            alt="Usuário"
-            className="w-24 h-24 mx-auto rounded-full border-4 border-indigo-500"
-          />
-          <h2 className="text-center text-lg font-bold mt-4">Heloisa Satira Rios dos Santos</h2>
-          <p className="text-center text-gray-600">Cliente</p>
-        </div>
-      </div>
-
-      <div className="w-full lg:w-1/2 bg-white p-6">
+    <div>
+      <h1>Fazer Reserva</h1>
+      <form onSubmit={handleSubmit}>
         <div>
-          <h2 className="text-xl font-bold mb-4">Mesas Disponíveis</h2>
-          <label className="flex flex-col">
-                <input
-                  type="date"
-                  value={dateTables}
-                  min={dateTables}
-                  className="p-2 border rounded"
-                  onChange={handleChangeDate}
-
-                />
-          </label>
+          <label htmlFor="mesaId">Mesa</label>
+          <input
+            type="number"
+            id="mesaId"
+            value={mesaId}
+            onChange={(e) => setMesaId(Number(e.target.value))}
+            required
+          />
         </div>
-        
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mt-2">
-          {mesas.map((table) => {
-          if (reservas.find(reserva => dateTables === reserva.data && reserva.mesa === table.id)){
-            return (
-              <button
-                key={table.id}
-                className="p-4 text-white bg-red-500 rounded-lg hover:bg-red-600 focus:outline-none focus:bg-red-700"
-                onClick={() => setSelectedTable(table.codigo)}
-              >
-                {table.codigo}
-              </button>
-            )
-          } else {
-          return (
-            <button
-              key={table.id}
-              className="p-4 text-white bg-indigo-500 rounded-lg hover:bg-indigo-600 focus:outline-none focus:bg-indigo-700"
-              onClick={() => setSelectedTable(table.codigo)} 
-            >
-              {table.codigo}
-            </button>
-          )}})}
+        <div>
+          <label htmlFor="nPessoas">Número de Pessoas</label>
+          <input
+            type="number"
+            id="nPessoas"
+            value={nPessoas}
+            onChange={(e) => setNPessoas(Number(e.target.value))}
+            required
+          />
         </div>
-      </div>
+        <div>
+          <label htmlFor="data">Data e Hora</label>
+          <input
+            type="datetime-local"
+            id="data"
+            value={data}
+            onChange={(e) => setData(e.target.value)}
+            required
+          />
+        </div>
+        <button type="submit">Reservar</button>
+      </form>
 
-      <div className="w-full lg:w-1/4 bg-gray-100 p-4 border-t lg:border-t-0 lg:border-l">
-        {selectedTable ? (
-          <div>
-            <h2 className="text-xl font-bold mb-4">Reservar {selectedTable}</h2>
-            <form className="flex flex-col space-y-4">
-              <label className="flex flex-col">
-                Nome:
-                <input
-                  type="text"
-                  className="p-2 border rounded"
-                  placeholder="Seu nome"
-                />
-              </label>
-              <label className="flex flex-col">
-                Data:
-                <input
-                  type="date"
-                  className="p-2 border rounded"
-                />
-              </label>
-              <label className="flex flex-col">
-                Pessoas:
-                <input
-                  type="number"
-                  max={4}
-                  min={1}
-                  className="p-2 border rounded"
-                />
-              </label>
-              <button
-                type="submit"
-                className="bg-indigo-500 text-white p-2 rounded-lg hover:bg-indigo-600 focus:outline-none focus:bg-indigo-700"
-              >
-                Confirmar Reserva
-              </button>
-            </form>
-          </div>
-        ) : (
-          <p className="text-gray-700">Selecione uma mesa para reservar</p>
-        )}
-      </div>
+      {mensagem && <p>{mensagem}</p>}
+
+      <h2>Minhas Reservas</h2>
+      <ul>
+        {reservas.map((reserva) => (
+          <li key={reserva.id}>
+            Mesa: {reserva.mesaId}, Data: {new Date(reserva.data).toLocaleString()}
+            <button onClick={() => cancelarReserva(reserva.id)}>Cancelar</button>
+          </li>
+        ))}
+      </ul>
     </div>
   );
-}
+};
+
+export default ReservaPage;
