@@ -1,0 +1,93 @@
+/*!**************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[5].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[5].use[3]!./src/app/Perfil/page.module.css ***!
+  \**************************************************************************************************************************************************************************************************************************************************************************/
+.page_container__WqeAR {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background-color: #000; /* Fundo preto */
+    height: 100vh;
+    color: #fff; /* Texto branco */
+  }
+  
+  .page_title__60OTn {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #ffc2de; /* Rosa */
+    margin-bottom: 20px;
+  }
+  
+  .page_card__TnOaW {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centraliza horizontalmente os elementos no card */
+    justify-content: center; /* Centraliza verticalmente os elementos no card */
+    background-color: #1e1e1e; /* Fundo cinza escuro */
+    border: 2px solid #ffc2de; /* Borda rosa */
+    border-radius: 10px;
+    padding: 20px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  .page_labelContainer__GEw_n {
+    width: 100%; /* Faz os elementos ocuparem toda a largura do card */
+    margin-bottom: 20px;
+  }
+  
+  .page_textField__VmzHj {
+    font-size: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Alinha o texto à esquerda */
+    width: 100%; /* Faz o label ocupar toda a largura */
+    color: #e0e0e0;
+  }
+  
+  .page_inputField__5IVdc {
+    padding: 10px;
+    border: 1px solid #ffc2de; /* Rosa */
+    border-radius: 5px;
+    background-color: #2e2e2e;
+    color: #fff;
+    width: 100%; /* Faz o campo de entrada ocupar toda a largura */
+  }
+  
+  .page_inputField__5IVdc:focus {
+    outline: none;
+    border-color: #ff90b3;
+  }
+  
+  .page_buttonContainer___lMpi {
+    display: flex;
+    justify-content: center;
+    width: 100%; /* Faz o botão ocupar toda a largura */
+  }
+  
+  .page_button__CoHnW {
+    margin-right: 10px; /* Adiciona espaço entre os botões */
+    padding: 10px 20px; /* Apenas para ajustar o tamanho */
+    background-color: #ffc2de;
+    color: #000;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 100%; /* Faz o botão ocupar toda a largura */
+    max-width: 200px; /* Limita a largura máxima do botão */
+    text-align: center;
+  }
+  
+  .page_button__CoHnW:hover {
+    background-color: #ff90b3;
+  }
+  
+  .page_button__CoHnW:disabled {
+    background-color: #e0e0e0;
+    cursor: not-allowed;
+  }
+  

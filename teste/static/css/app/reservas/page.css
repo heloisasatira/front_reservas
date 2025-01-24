@@ -1,0 +1,51 @@
+/*!****************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[5].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[5].use[3]!./src/app/reservas/page.module.css ***!
+  \****************************************************************************************************************************************************************************************************************************************************************************/
+.page_page-container__5GDTy {
+    padding: 20px;
+    background-color: #f9f9f9;
+  }
+  
+  .page_form-container__7kGUY {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .page_form-group__NPmfA {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .page_submit-button__uLtzi {
+    padding: 10px 20px;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .page_reservas-container__ADfEZ {
+    margin-top: 20px;
+  }
+  
+  .page_reserva-card__MrKEO {
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 10px;
+  }
+  
+  .page_cancel-button__gaF5l {
+    margin-top: 10px;
+    background-color: #f44336;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .page_message__ePPxZ {
+    margin-top: 20px;
+    color: #ff9800;
+  }
+  

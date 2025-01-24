@@ -2,7 +2,7 @@ interface Usuario {
     id?: number,
     nome: string,
     password: string,
-    tipo: 'Cliente' | 'Adm',
+    tipo: 'cliente' | 'admin',
     email?: string
 }
 

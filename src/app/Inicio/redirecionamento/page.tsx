@@ -26,6 +26,14 @@ const Perfil = () => {
           <h2>Visualizar Perfil</h2>
           <p>Veja e edite as informações do seu perfil.</p>
         </div>
+
+        <div
+          className={styles.card}
+          onClick={() => router.push('/Adm')}
+        >
+          <h2>Visualizar Reservas</h2>
+          <p>Veja as informações das reservas cadastradas.</p>
+        </div>
       </div>
     </div>
   );

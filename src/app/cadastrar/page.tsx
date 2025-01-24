@@ -1,9 +1,9 @@
 'use client';
+
 import styles from "./page.module.css";
-import { FormEvent, useState, useEffect } from "react"; import { useRouter } from "next/navigation";
+import { FormEvent, useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Usuario from "../interfaces/usuario";
-import Titulo from "../components/titulo";
-import ButtonCadastro from "../components/buttonCadastrar";
 import { setCookie, parseCookies } from 'nookies';
 import { ApiURL } from "../Config";
 
@@ -12,30 +12,29 @@ const Cadastrar = () => {
     nome: '',
     email: '',
     password: '',
-    tipo: 'Cliente'
+    tipo: 'cliente' // Tipo inicial como 'cliente'
   });
-  //este usuario precisa ter as caracteristicas de Usuario
-  
+
   const [msgError, setMsgError] = useState('');
   const router = useRouter();
-  
-  useEffect(()=>{
-    console.log(msgError)
-  },[msgError])
 
+  // Verifica o erro sempre que ele for atualizado
+  useEffect(() => {
+    console.log(msgError);
+  }, [msgError]);
+
+  // Função para manipular o envio do formulário
   const handleSubmit = async (e: FormEvent) => {
-    console.log('teste')
     e.preventDefault();
 
     try {
       const response = await fetch(`${ApiURL}/auth/cadastro`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify(usuario)
+        body: JSON.stringify(usuario),
       });
-      console.log(response)
 
       if (response) {
         const data = await response.json();
@@ -45,12 +44,10 @@ const Cadastrar = () => {
           setMsgError(mensagem);
         } else {
           setCookie(undefined, 'restaurant-token', token, {
-            maxAge: 60 * 60 * 1 // 1 hora
+            maxAge: 60 * 60 * 1, // 1 hora
           });
           router.push('/');
         }
-      } else {
-        
       }
     } catch (error) {
       console.error('Erro na requisição:', error);
@@ -65,43 +62,50 @@ const Cadastrar = () => {
     }
   }, [router]);
 
+  // Funções para atualizar os valores dos campos
   const alterarNome = (novoNome: string) => {
     setUsuario((valoresAnteriores) => ({
       ...valoresAnteriores,
-      nome: novoNome
-    }))
-  }
+      nome: novoNome,
+    }));
+  };
 
   const alterarEmail = (novoEmail: string) => {
     setUsuario((valoresAnteriores) => ({
       ...valoresAnteriores,
-      email: novoEmail
-    }))
-  }
+      email: novoEmail,
+    }));
+  };
 
   const alterarSenha = (novaSenha: string) => {
     setUsuario((valoresAnteriores) => ({
       ...valoresAnteriores,
-      password: novaSenha
-    }))
-  }
-  const [error, setError] = useState('');
-  const route = useRouter();
+      password: novaSenha,
+    }));
+  };
+
+  const alterarTipo = (novoTipo: 'cliente' | 'admin') => {
+    setUsuario((valoresAnteriores) => ({
+      ...valoresAnteriores,
+      tipo: novoTipo,
+    }));
+  };
 
   return (
     <div className={styles.page}>
+      <form className={styles.form} onSubmit={handleSubmit}>
+        <h2>Cadastro</h2>
 
-      <form className={styles.form} onSubmit={handleSubmit} >
-        <Titulo titulo="Cadastro" />
         <div className={styles.inputGroup}>
           <input
-            type="nome"
+            type="text"
             placeholder="Nome"
             value={usuario?.nome}
             onChange={(e) => alterarNome(e.target.value)}
             required
           />
         </div>
+
         <div className={styles.inputGroup}>
           <input
             type="email"
@@ -122,39 +126,64 @@ const Cadastrar = () => {
           />
         </div>
 
-        <div className={styles.buttonGroup}>
-          <button type="submit" style ={{
-        width: '204px',
-        height: '50px', 
-        backgroundColor: '#ff0084',
-        borderRadius: '5px',
-        color: '#fff',
-        fontSize: '18px', 
-        fontWeight: '600',
-        border: 'none',
-        cursor: 'pointer',
-        transition: 'background-color 160ms linear, transform 160ms ease',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}>Cadastrar</button>
+        {/* Dropdown para selecionar tipo de usuário */}
+        <div className={styles.inputGroup}>
+          <select
+            value={usuario.tipo}
+            onChange={(e) => alterarTipo(e.target.value as 'cliente' | 'admin')}
+            required
+          >
+            <option value="cliente">Cliente</option>
+            <option value="admin">Administrador</option>
+          </select>
         </div>
+
+        {msgError && <div className={styles.error}>{msgError}</div>}
+
+        <div className={styles.buttonGroup}>
+          <button
+            type="submit"
+            style={{
+              width: '204px',
+              height: '50px',
+              backgroundColor: '#ff0084',
+              borderRadius: '5px',
+              color: '#fff',
+              fontSize: '18px',
+              fontWeight: '600',
+              border: 'none',
+              cursor: 'pointer',
+              transition: 'background-color 160ms linear, transform 160ms ease',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            Cadastrar
+          </button>
+        </div>
+
         <div className="input-group">
-          <button style={{
-            width: '204px',
-            height: '50px',
-            backgroundColor: 'black',
-            borderRadius: '5px',
-            color: '#fff',
-            fontSize: '18px',
-            fontWeight: '600',
-            border: 'none',
-            cursor: 'pointer',
-            transition: 'background-color 160ms linear, transform 160ms ease',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }} onClick={() => { route.push('/Login') }}>Voltar</button>
+          <button
+            style={{
+              width: '204px',
+              height: '50px',
+              backgroundColor: 'black',
+              borderRadius: '5px',
+              color: '#fff',
+              fontSize: '18px',
+              fontWeight: '600',
+              border: 'none',
+              cursor: 'pointer',
+              transition: 'background-color 160ms linear, transform 160ms ease',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+            onClick={() => router.push('/Login')}
+          >
+            Voltar
+          </button>
         </div>
       </form>
     </div>

@@ -1,0 +1,50 @@
+.adminPage {
+    background-color: #121212; /* Preto */
+    color: #fff; /* Texto branco para contraste */
+    font-family: 'Arial', sans-serif;
+    padding: 20px;
+    border-radius: 8px;
+  }
+  
+  .title {
+    color: #f8c8d4; /* Rosa claro */
+    text-align: center;
+    font-size: 2.5rem;
+  }
+  
+  .errorMessage {
+    color: #ff4f4f; /* Vermelho para erro */
+    text-align: center;
+    font-size: 1.2rem;
+    margin-top: 20px;
+  }
+  
+  .reservasList {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 20px;
+  }
+  
+  .reservaCard {
+    background-color: #3e3e3e; /* Tom de cinza escuro para contraste */
+    color: #f8c8d4; /* Rosa claro */
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.5);
+    transition: transform 0.3s ease;
+  }
+  
+  .reservaCard:hover {
+    transform: scale(1.05);
+  }
+  
+  .reservaCard p {
+    margin: 5px 0;
+  }
+  
+  /* Criando uma classe local para o strong */
+  .strongText {
+    color: #f8c8d4; /* Rosa claro */
+  }
+  
