@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { ApiURL } from "../Config"; 
 import styles from './page.module.css';
+import { useRouter } from "next/navigation";
 
 const ReservaPage = () => {
   const [mesaId, setMesaId] = useState<number>(0);
@@ -11,6 +12,16 @@ const ReservaPage = () => {
   const [data, setData] = useState<string>('');
   const [mensagem, setMensagem] = useState<string>('');
   const [reservas, setReservas] = useState<Array<any>>([]);
+
+  const router = useRouter();
+  
+  // Função para garantir que o valor seja positivo
+  const handlePositiveNumber = (value: string, setter: React.Dispatch<React.SetStateAction<number>>) => {
+    const numValue = Number(value);
+    if (numValue > 0) {
+      setter(numValue);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -66,7 +77,8 @@ const ReservaPage = () => {
             type="number"
             id="mesaId"
             value={mesaId}
-            onChange={(e) => setMesaId(Number(e.target.value))}
+            min="1" // Garante que o valor seja positivo
+            onChange={(e) => handlePositiveNumber(e.target.value, setMesaId)}
             required
           />
         </div>
@@ -76,7 +88,8 @@ const ReservaPage = () => {
             type="number"
             id="usuarioId"
             value={usuarioId}
-            onChange={(e) => setUsuarioId(Number(e.target.value))}
+            min="1" // Garante que o valor seja positivo
+            onChange={(e) => handlePositiveNumber(e.target.value, setUsuarioId)}
             required
           />
         </div>
@@ -86,7 +99,8 @@ const ReservaPage = () => {
             type="number"
             id="nPessoas"
             value={nPessoas}
-            onChange={(e) => setNPessoas(Number(e.target.value))}
+            min="1" // Garante que o valor seja positivo
+            onChange={(e) => handlePositiveNumber(e.target.value, setNPessoas)}
             required
           />
         </div>
@@ -101,6 +115,27 @@ const ReservaPage = () => {
           />
         </div>
         <button type="submit" className={styles.submitButton}>Reservar</button>
+        <button
+          type="button"
+          style={{
+            width: '204px',
+            height: '50px',
+            backgroundColor: 'black',
+            borderRadius: '5px',
+            color: '#fff',
+            fontSize: '18px',
+            fontWeight: '600',
+            border: 'none',
+            cursor: 'pointer',
+            transition: 'background-color 160ms linear, transform 160ms ease',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+          onClick={() => { router.push('/') }}
+        >
+          Voltar
+        </button>
       </form>
 
       <h2 className={styles.h2}>Minhas Reservas</h2>

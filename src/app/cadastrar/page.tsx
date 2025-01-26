@@ -1,29 +1,22 @@
 'use client';
-
-import styles from "./page.module.css";
-import { FormEvent, useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import Usuario from "../interfaces/usuario";
-import { setCookie, parseCookies } from 'nookies';
-import { ApiURL } from "../Config";
+import styles from './page.module.css';
+import { FormEvent, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import Usuario from '../interfaces/usuario';
+import { setCookie } from 'nookies';
+import { ApiURL } from '../Config';
 
 const Cadastrar = () => {
   const [usuario, setUsuario] = useState<Usuario>({
     nome: '',
     email: '',
     password: '',
-    tipo: 'cliente' // Tipo inicial como 'cliente'
+    tipo: 'cliente',
   });
 
   const [msgError, setMsgError] = useState('');
   const router = useRouter();
 
-  // Verifica o erro sempre que ele for atualizado
-  useEffect(() => {
-    console.log(msgError);
-  }, [msgError]);
-
-  // Função para manipular o envio do formulário
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
@@ -36,9 +29,9 @@ const Cadastrar = () => {
         body: JSON.stringify(usuario),
       });
 
-      if (response) {
+      if (response.ok) {
         const data = await response.json();
-        const { erro, mensagem, token } = data;
+        const { erro, mensagem, token, redirectUrl } = data;
 
         if (erro) {
           setMsgError(mensagem);
@@ -46,8 +39,12 @@ const Cadastrar = () => {
           setCookie(undefined, 'restaurant-token', token, {
             maxAge: 60 * 60 * 1, // 1 hora
           });
-          router.push('/');
+          if (!erro) {
+            router.push(redirectUrl); // Usando o valor retornado pela API para redirecionar
+          }
         }
+      } else {
+        setMsgError('Erro ao realizar cadastro. Tente novamente.');
       }
     } catch (error) {
       console.error('Erro na requisição:', error);
@@ -55,115 +52,64 @@ const Cadastrar = () => {
     }
   };
 
-  useEffect(() => {
-    const { 'restaurant-token': token } = parseCookies();
-    if (token) {
-      router.push('/');
-    }
-  }, [router]);
-
-  // Funções para atualizar os valores dos campos
-  const alterarNome = (novoNome: string) => {
-    setUsuario((valoresAnteriores) => ({
-      ...valoresAnteriores,
-      nome: novoNome,
-    }));
-  };
-
-  const alterarEmail = (novoEmail: string) => {
-    setUsuario((valoresAnteriores) => ({
-      ...valoresAnteriores,
-      email: novoEmail,
-    }));
-  };
-
-  const alterarSenha = (novaSenha: string) => {
-    setUsuario((valoresAnteriores) => ({
-      ...valoresAnteriores,
-      password: novaSenha,
-    }));
-  };
-
-  const alterarTipo = (novoTipo: 'cliente' | 'admin') => {
-    setUsuario((valoresAnteriores) => ({
-      ...valoresAnteriores,
-      tipo: novoTipo,
-    }));
-  };
-
   return (
     <div className={styles.page}>
       <form className={styles.form} onSubmit={handleSubmit}>
         <h2>Cadastro</h2>
-
         <div className={styles.inputGroup}>
           <input
             type="text"
             placeholder="Nome"
-            value={usuario?.nome}
-            onChange={(e) => alterarNome(e.target.value)}
+            value={usuario.nome}
+            onChange={(e) => setUsuario({ ...usuario, nome: e.target.value })}
             required
           />
         </div>
-
         <div className={styles.inputGroup}>
           <input
             type="email"
             placeholder="E-mail"
-            value={usuario?.email}
-            onChange={(e) => alterarEmail(e.target.value)}
+            value={usuario.email}
+            onChange={(e) => setUsuario({ ...usuario, email: e.target.value })}
             required
           />
         </div>
-
         <div className={styles.inputGroup}>
           <input
             type="password"
             placeholder="Senha"
-            value={usuario?.password}
-            onChange={(e) => alterarSenha(e.target.value)}
+            value={usuario.password}
+            onChange={(e) => setUsuario({ ...usuario, password: e.target.value })}
             required
           />
         </div>
-
-        {/* Dropdown para selecionar tipo de usuário */}
         <div className={styles.inputGroup}>
           <select
             value={usuario.tipo}
-            onChange={(e) => alterarTipo(e.target.value as 'cliente' | 'admin')}
-            required
+            onChange={(e) =>
+              setUsuario({ ...usuario, tipo: e.target.value as 'cliente' | 'admin' })
+            }
           >
             <option value="cliente">Cliente</option>
-            <option value="admin">Administrador</option>
+            <option value="admin">Admin</option>
           </select>
         </div>
-
-        {msgError && <div className={styles.error}>{msgError}</div>}
-
-        <div className={styles.buttonGroup}>
-          <button
-            type="submit"
-            style={{
-              width: '204px',
-              height: '50px',
-              backgroundColor: '#ff0084',
-              borderRadius: '5px',
-              color: '#fff',
-              fontSize: '18px',
-              fontWeight: '600',
-              border: 'none',
-              cursor: 'pointer',
-              transition: 'background-color 160ms linear, transform 160ms ease',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            Cadastrar
-          </button>
-        </div>
-
-        <div className="input-group">
+        <button  style={{
+                width: '204px',
+                height: '50px',
+                backgroundColor: '#f72585',
+                borderRadius: '5px',
+                color: '#fff',
+                fontSize: '18px',
+                fontWeight: '600',
+                border: 'none',
+                cursor: 'pointer',
+                transition: 'background-color 160ms linear, transform 160ms ease',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>Cadastrar</button>
+                 <div className="input-group">
           <button
             style={{
               width: '204px',
@@ -184,8 +130,9 @@ const Cadastrar = () => {
           >
             Voltar
           </button>
-        </div>
+          </div>
       </form>
+      {msgError && <p>{msgError}</p>}
     </div>
   );
 };

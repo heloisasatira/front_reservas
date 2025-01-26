@@ -14,7 +14,6 @@ const AdminPage = () => {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
-            // Adicione um token de autenticação no header, se necessário
             'Authorization': `Bearer ${localStorage.getItem('authToken')}`
           }
         });

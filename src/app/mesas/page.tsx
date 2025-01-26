@@ -61,6 +61,13 @@ const CadastrarMesa = () => {
     }));
   };
 
+  const handlePositiveNumber = (value: string, key: keyof Mesa) => {
+    const numValue = parseInt(value, 10); // Converte para número inteiro
+    if (!isNaN(numValue) && numValue > 0) {
+      alterarMesa(key, numValue as Mesa[typeof key]); // Garante que o valor seja válido para a chave
+    }
+  };
+
   return (
     <div className={styles.page}>
       <form className={styles.form} onSubmit={handleSubmit}>
@@ -69,13 +76,14 @@ const CadastrarMesa = () => {
         {msgSuccess && <p className={styles.success}>{msgSuccess}</p>}
 
         <div className={styles.inputGroup}>
-          <input
-            type="number"
-            placeholder="Número de Lugares"
-            value={mesa.n_lugares}
-            onChange={(e) => alterarMesa("n_lugares", parseInt(e.target.value))}
-            required
-          />
+        <input
+  type="number"
+  placeholder="Número de Lugares"
+  value={mesa.n_lugares}
+  onChange={(e) => handlePositiveNumber(e.target.value, "n_lugares")}
+  min="1"
+  required
+/>
         </div>
 
         <div className={styles.inputGroup}>
@@ -136,29 +144,28 @@ const CadastrarMesa = () => {
       </form>
 
       {mesasCadastradas.length > 0 && (
-  <div className={styles.tableContainer}>
-    <h2 className={styles.tableTitle}>Mesas Cadastradas</h2>
-    <table className={styles.table}>
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Código</th>
-          <th>Número de Lugares</th>
-        </tr>
-      </thead>
-      <tbody>
-        {mesasCadastradas.map((mesa) => (
-          <tr key={mesa.id}>
-            <td>{mesa.id}</td>
-            <td>{mesa.codigo}</td>
-            <td>{mesa.n_lugares}</td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  </div>
-)}
-
+        <div className={styles.tableContainer}>
+          <h2 className={styles.tableTitle}>Mesas Cadastradas</h2>
+          <table className={styles.table}>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Código</th>
+                <th>Número de Lugares</th>
+              </tr>
+            </thead>
+            <tbody>
+              {mesasCadastradas.map((mesa) => (
+                <tr key={mesa.id}>
+                  <td>{mesa.id}</td>
+                  <td>{mesa.codigo}</td>
+                  <td>{mesa.n_lugares}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 };

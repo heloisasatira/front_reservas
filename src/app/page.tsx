@@ -12,9 +12,7 @@ const Perfil = () => {
             className={styles.logo} 
           />
         </div>
-        <div className={styles.headerActions}>
-          <button className={styles.ctaButton}>Faça sua Reserva</button>
-        </div>
+
       </header>
 
       <div className={styles.content}>

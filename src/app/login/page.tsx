@@ -25,16 +25,14 @@ const Login = () => {
       if (response) {
         const data = await response.json();
         console.log(data);
-        const { erro, mensagem, token } = data;
+        const { erro, mensagem, token, redirectUrl } = data;
         if (erro) {
           setMsgError(mensagem);
         } else {
-          // Armazena o token em um cookie
           setCookie(undefined, 'restaurant-token', token, {
             maxAge: 60 * 60 * 1 // 1 hora
           });
-          // Redireciona para a página redirecionamento.tsx
-          router.push('/Inicio/redirecionamento');
+          router.push(redirectUrl);
         }
       } else {
         setMsgError('Login falhou. Verifique suas credenciais.');
@@ -76,9 +74,7 @@ const Login = () => {
             />
           </div>
           <div>
-            <button
-              type="submit"
-              style={{
+            <button     style={{
                 width: '204px',
                 height: '50px',
                 backgroundColor: '#f72585',
@@ -92,10 +88,7 @@ const Login = () => {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-              }}
-            >
-              Entrar
-            </button>
+              }}>Entrar</button>
             <div style={{ textAlign: 'center' }}>
               <a
                 className="btn"
@@ -105,8 +98,7 @@ const Login = () => {
                 Novo Cadastro
               </a>
             </div>
-            <div className="input-group">
-              <button
+            <button
                 type="button"
                 style={{
                   width: '204px',
@@ -127,10 +119,9 @@ const Login = () => {
               >
                 Voltar
               </button>
-            </div>
           </div>
         </form>
-        {msgError && <p>{msgError}</p>} {/* Exibe a mensagem de erro, se houver */}
+        {msgError && <p>{msgError}</p>}
       </div>
     </div>
   );
