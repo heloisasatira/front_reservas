@@ -15,7 +15,7 @@ const CadastrarMesa = () => {
     n_lugares: 0,
     codigo: "",
   });
-  // Aqui usamos `useState` para armazenar os dados da mesa que está sendo cadastrada.
+  // Aqui se usa o `useState` para armazenar os dados da mesa que está sendo cadastrada
   // O estado inicial tem um `id` (0), número de lugares (`n_lugares`: 0), e um código vazio.
 
   const [mesasCadastradas, setMesasCadastradas] = useState<Mesa[]>([]);
@@ -23,7 +23,7 @@ const CadastrarMesa = () => {
 
   const [msgError, setMsgError] = useState('');
   const [msgSuccess, setMsgSuccess] = useState('');
-  // Mais dois estados para guardar mensagens de erro e sucesso, que serão exibidas na interface.
+  //mais dois estados para guardar mensagens de erro e sucesso, que serão exibidas na interface
 
   const router = useRouter();
   // Hook do Next.js que ajuda a navegar para outras páginas.
@@ -32,7 +32,7 @@ const CadastrarMesa = () => {
     e.preventDefault();
     setMsgError('');
     setMsgSuccess('');
-    // Previne o comportamento padrão do formulário (recarregar a página) e limpa as mensagens.
+    // previne o comportamento padrão do formulário (recarregar a página) e limpa as mensagens
 
     try {
       const { 'restaurant-token': token } = parseCookies();

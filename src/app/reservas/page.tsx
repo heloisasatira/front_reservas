@@ -24,11 +24,10 @@ const ReservaPage = () => {
     }
   };
 
-  // Essa aqui é a mágica que acontece quando o formulário é enviado.
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault(); // Impede o formulário de recarregar a página (ninguém quer isso, né?).
     
-    // Se faltar algum campo obrigatório, manda uma bronquinha pro usuário.
+    // Se faltar algum campo obrigatório, manda uma mensagem pro usuário.
     if (!mesaId || !usuarioId || !nPessoas || !data) {
       setMensagem('Todos os campos são obrigatórios.'); // Mensagem de erro.
       return; // Sai daqui, porque não dá pra continuar sem esses dados.
@@ -38,8 +37,8 @@ const ReservaPage = () => {
       // Fazendo um POST pra API com os dados da reserva.
       const response = await fetch(`${ApiURL}/reservas/criar`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' }, // Dizendo que o conteúdo é JSON.
-        body: JSON.stringify({ mesaId, usuarioId, n_pessoas: nPessoas, data }), // Enviando os dados.
+        headers: { 'Content-Type': 'application/json' }, // Dizendo que o conteúdo é JSON
+        body: JSON.stringify({ mesaId, usuarioId, n_pessoas: nPessoas, data }), // enviando os dados.
       });
 
       if (!response.ok) { // Se deu erro na resposta...
@@ -64,8 +63,8 @@ const ReservaPage = () => {
       // Mandando um DELETE pra API com o ID da reserva.
       const response = await fetch(`${ApiURL}/reservas/cancelar`, {
         method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' }, // JSON de novo.
-        body: JSON.stringify({ reservaId: id }), // Dizendo qual reserva apagar.
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ reservaId: id }), // Dizendo qual reserva apagar (a partir do id).
       });
 
       const responseData = await response.json(); // Pega a resposta.
